@@ -1,10 +1,13 @@
+
+#include <stdio.h>
+#include <stdarg.h>
 #include "font.h"
-#include "glut.h"
-#include "glm/glm.hpp"
+
 using namespace glm;
 
 static vec2 position;
 static float size = FONT_DEFAULT_SIZE;
+static unsigned char color[3];
 
 void fontBegin() {
 	glPushMatrix();
@@ -33,15 +36,23 @@ void fontEnd() {
 }
 
 void fontSetPosition(float _x, float _y) {
-
+	position = vec2(_x, _y);
 }
 void fontSetSize(float _size) {
-
+	size = _size;
 }
 void fontSetColor(unsigned char _red, unsigned char _green, unsigned char _blue) {
-
+	color[0] = _red;
+	color[1] = _green;
+	color[0] = _blue;
 }
-void fontDraw(const char _format, ...) {
+void fontDraw(const char *_format, ...) {
+	va_list argList;
+	va_start(argList, _format);
+	char str[256];
+	vsprintf_s(str, _format, argList);
+	va_end(argList);
 
+	printf("%s\n", str);
 
 }

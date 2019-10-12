@@ -1,6 +1,9 @@
 #pragma once
+#include <stdlib.h>
+
+#include "glut.h"
+#include "glm/glm.hpp"
 #define FONT_DEFAULT_SIZE (100.f)
- 
 void fontBegin();
 void fontEnd();
 

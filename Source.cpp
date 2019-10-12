@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "glut.h"
 #include "glm/glm.hpp"
-
+#include "font.h"
 
 using namespace glm;
 
@@ -28,6 +28,10 @@ void display(void) {
 	glRotatef(angle, 0, 0, 1);// GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
 	glScalef(256,256,1);//GLfloat x, GLfloat y, GLfloat z
 	glutWireTeapot(1);
+	fontBegin();
+	//fontDraw("angle:%f", windowSize.x);
+	fontEnd();
+
 	glutSwapBuffers();
 };
 
@@ -45,12 +49,12 @@ void reshape(int width, int height) {
 	windowSize = ivec2(width, height);
 	
 }
-/*void keyboard(unsigned char key, int x, int y) {
+void keyboard(unsigned char key, int x, int y) {
 	if (key == 0x1b)
-		//__declspec(noreturn) exit(0);
+		exit(0);
 	printf("keyboard:\'%c\'(%#x)\n", key, key);
 	keys[key] = true;
-}*/
+}
 void keyboardUp(unsigned char key, int x, int y) {
 	printf("keyboardUp:\'%c\'(%#x)\n", key, key);
 	keys[key] = false;
