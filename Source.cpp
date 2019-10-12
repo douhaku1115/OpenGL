@@ -28,8 +28,11 @@ void display(void) {
 	glRotatef(angle, 0, 0, 1);// GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
 	glScalef(256,256,1);//GLfloat x, GLfloat y, GLfloat z
 	glutWireTeapot(1);
+	
 	fontBegin();
-	//fontDraw("angle:%f", windowSize.x);
+	fontSetColor(0, 0xff, 0xff);
+	fontSetPosition(0, windowSize.y );
+	//fontDraw("%c",angle);
 	fontEnd();
 
 	glutSwapBuffers();
@@ -52,11 +55,11 @@ void reshape(int width, int height) {
 void keyboard(unsigned char key, int x, int y) {
 	if (key == 0x1b)
 		exit(0);
-	printf("keyboard:\'%c\'(%#x)\n", key, key);
+	//printf("keyboard:\'%c\'(%#x)\n", key, key);
 	keys[key] = true;
 }
 void keyboardUp(unsigned char key, int x, int y) {
-	printf("keyboardUp:\'%c\'(%#x)\n", key, key);
+	//printf("keyboardUp:\'%c\'(%#x)\n", key, key);
 	keys[key] = false;
 }
 int main(int argc, char* argv[]) {

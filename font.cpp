@@ -41,11 +41,15 @@ void fontSetPosition(float _x, float _y) {
 void fontSetSize(float _size) {
 	size = _size;
 }
+float fontGetSize() {
+	return size;
+}
 void fontSetColor(unsigned char _red, unsigned char _green, unsigned char _blue) {
 	color[0] = _red;
 	color[1] = _green;
 	color[0] = _blue;
 }
+
 void fontDraw(const char *_format, ...) {
 	va_list argList;
 	va_start(argList, _format);
@@ -53,6 +57,14 @@ void fontDraw(const char *_format, ...) {
 	vsprintf_s(str, _format, argList);
 	va_end(argList);
 
-	printf("%s\n", str);
-
+	glColor3ub(color[0], color[1], color[2]);
+	glPushMatrix();
+	{
+		glTranslatef(position.x,position.y+ size, 0);
+		glScalef(1,-1,1);
+		for (char* p = str; *p != '\0'; p++)
+			glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
+		//printf("%s\n", str);
+	}
+	glPopMatrix();
 }
