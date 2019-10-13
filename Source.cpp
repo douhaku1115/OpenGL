@@ -43,12 +43,16 @@ void display(void) {
 	if (keys['d']) angle += 1;
 	if (keys['a']) angle -= 1;
 	
-	fontBegin();
-	fontDraw("angle:%f",angle);
-	fontSetColor(0, 0xff, 0);
-	fontSetSize(FONT_DEFAULT_SIZE / 20);
-	fontSetPosition(0, windowSize.y -33);
 	
+	fontBegin();
+	
+	fontSetColor(0, 0xff, 0);
+	fontSetSize(4);//FONT_DEFAULT_SIZE/40);
+	float lineHeight = 30;
+	float y = windowSize.y - lineHeight * 2;
+	fontSetPosition(0, y);
+	fontSetWeight(fontGetWeightMax());
+	fontDraw("min:%f", fontGetWeightMin());
 	fontEnd();
 
 	glutSwapBuffers();

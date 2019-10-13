@@ -5,6 +5,7 @@
 
 using namespace glm;
 
+static float weight=1;
 static vec2 position;
 static float size = FONT_DEFAULT_SIZE;
 static unsigned char color[3];
@@ -44,6 +45,21 @@ void fontSetSize(float _size) {
 float fontGetSize() {
 	return size;
 }
+float fontGetWeightMin() {
+	GLfloat weight[2];
+	glGetFloatv(GL_LINE_WIDTH_RANGE,weight);//GLenum pname, GLfloat *params)
+	return weight[0];
+}
+float fontGetWeightMax() {
+	GLfloat weight[2];
+	glGetFloatv(GL_LINE_WIDTH_RANGE, weight);//GLenum pname, GLfloat *params)
+	return weight[1];
+}
+
+void fontSetWeight(float _weight) {
+	weight = _weight;
+
+}
 void fontSetColor(unsigned char _red, unsigned char _green, unsigned char _blue) {
 	color[0] = _red;
 	color[1] = _green;
@@ -57,6 +73,7 @@ void fontDraw(const char *_format, ...) {
 	vsprintf_s(str, _format, argList);
 	va_end(argList);
 
+	glLineWidth(weight);//GLfloat width)
 	glColor3ub(color[0], color[1], color[2]);
 	glPushMatrix();
 	{
