@@ -47,7 +47,7 @@ float fontGetSize() {
 void fontSetColor(unsigned char _red, unsigned char _green, unsigned char _blue) {
 	color[0] = _red;
 	color[1] = _green;
-	color[0] = _blue;
+	color[2] = _blue;
 }
 
 void fontDraw(const char *_format, ...) {

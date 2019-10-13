@@ -10,9 +10,12 @@ using namespace glm;
 ivec2 windowSize = { 800, 600 };
 
 bool keys[256];
-Rect rect = Rect(vec2(100, 100), vec2(100, 100));
+
+Rect rect1 = Rect(vec2(100, 100), vec2(100, 200));
+Rect rect2 = Rect(vec2(windowSize.x/2, windowSize.y / 2), vec2(200, 100));
 
 void display(void) {
+	
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);//(GLenum mode);
 	glLoadIdentity();
@@ -24,12 +27,27 @@ void display(void) {
 	glMatrixMode(GL_MODELVIEW);//GLenum mode
 	glLoadIdentity();
 	
-	rect.Draw();
+	
+	if (rect1.intersect(rect2))
+		glColor3ub(0xff, 0x00, 0x00);
+	else
+		glColor3ub(0x00, 0x00, 0xff);
+
+	rect1.draw();
+
+	
+	glColor3ub(0x00, 0xff, 0x00);
+	rect2.draw();
+
+	static float angle;
+	if (keys['d']) angle += 1;
+	if (keys['a']) angle -= 1;
 	
 	fontBegin();
-	fontSetColor(0, 0xff, 0xff);
-	fontSetSize(FONT_DEFAULT_SIZE / 2);
-	fontSetPosition(0, windowSize.y );
+	fontDraw("angle:%f",angle);
+	fontSetColor(0, 0xff, 0);
+	fontSetSize(FONT_DEFAULT_SIZE / 20);
+	fontSetPosition(0, windowSize.y -33);
 	
 	fontEnd();
 
@@ -38,10 +56,10 @@ void display(void) {
 
 void idle(void){
 	float f = 2;
-	if (keys['w']) rect.m_position.y -= f;
-	if (keys['s']) rect.m_position.y += f;
-	if (keys['a']) rect.m_position.x -= f;
-	if (keys['d']) rect.m_position.x += f;
+	if (keys['w']) rect1.m_position.y -= f;
+	if (keys['s']) rect1.m_position.y += f;
+	if (keys['a']) rect1.m_position.x -= f;
+	if (keys['d']) rect1.m_position.x += f;
 	
 	glutPostRedisplay();
 }
