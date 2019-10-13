@@ -3,12 +3,15 @@
 #include "glut.h"
 #include "glm/glm.hpp"
 #include "font.h"
+#include "Rect.h"
 
 using namespace glm;
 
 ivec2 windowSize = { 800, 600 };
 
 bool keys[256];
+Rect rect = Rect(vec2(100, 100), vec2(100, 100));
+
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);//(GLenum mode);
@@ -20,25 +23,26 @@ void display(void) {
 		0);	//GLdouble top);
 	glMatrixMode(GL_MODELVIEW);//GLenum mode
 	glLoadIdentity();
-	glTranslatef(windowSize.x / 2, windowSize.y / 2, 0); //GLfloat x, GLfloat y, GLfloat z)
-	static float angle;
-	//angle += 1;
-	if (keys['d'])  angle+=1;
-	if (keys['a'])  angle -= 1;
-	glRotatef(angle, 0, 0, 1);// GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
-	glScalef(256,256,1);//GLfloat x, GLfloat y, GLfloat z
-	glutWireTeapot(1);
+	
+	rect.Draw();
 	
 	fontBegin();
 	fontSetColor(0, 0xff, 0xff);
+	fontSetSize(FONT_DEFAULT_SIZE / 2);
 	fontSetPosition(0, windowSize.y );
-	//fontDraw("%c",angle);
+	
 	fontEnd();
 
 	glutSwapBuffers();
 };
 
-void idle(){
+void idle(void){
+	float f = 2;
+	if (keys['w']) rect.m_position.y -= f;
+	if (keys['s']) rect.m_position.y += f;
+	if (keys['a']) rect.m_position.x -= f;
+	if (keys['d']) rect.m_position.x += f;
+	
 	glutPostRedisplay();
 }
 void timer(int value) {
@@ -73,7 +77,7 @@ int main(int argc, char* argv[]) {
 	//glutTimerFunc(0, timer, 0);
 	glutIdleFunc(idle);
 	glutReshapeFunc(reshape);//void (GLUTCALLBACK *func)(int width, int height));
-	//glutKeyboardFunc(keyboard);//GLUTCALLBACK *func)(unsigned char key, int x, int y));
+	glutKeyboardFunc(keyboard);//GLUTCALLBACK *func)(unsigned char key, int x, int y));
 	glutKeyboardUpFunc(keyboardUp);//void (GLUTCALLBACK *func)(unsigned char key, int x, int y));
 	glutIgnoreKeyRepeat(GL_TRUE);//int ignore
 	glutMainLoop();
