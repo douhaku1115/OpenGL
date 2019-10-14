@@ -4,13 +4,15 @@
 #include "glm/glm.hpp"
 #include "font.h"
 #include "Rect.h"
+#include "Ball.h"
+#include <time.h>
 
 using namespace glm;
-
+#define BALL_MAX 256
 ivec2 windowSize = { 800, 600 };
 
 bool keys[256];
-
+Ball balls[BALL_MAX];
 Rect rect1 = Rect(vec2(100, 100), vec2(100, 200));
 Rect rect2 = Rect(vec2(windowSize.x/2, windowSize.y / 2), vec2(200, 100));
 
@@ -44,21 +46,43 @@ void display(void) {
 	if (keys['a']) angle -= 1;
 	
 	
+	for (int i=0;i<BALL_MAX;i++)
+		balls[i].draw();
 	fontBegin();
-	
 	fontSetColor(0, 0xff, 0);
 	fontSetSize(4);//FONT_DEFAULT_SIZE/40);
 	float lineHeight = 30;
 	float y = windowSize.y - lineHeight * 2;
+	
 	fontSetPosition(0, y);
-	fontSetWeight(fontGetWeightMax());
-	fontDraw("min:%f", fontGetWeightMin());
+	fontSetWeight(fontGetWeightMin());
+	//fontDraw("min:%f", fontGetWeightMin());
+	
 	fontEnd();
 
 	glutSwapBuffers();
 };
 
 void idle(void){
+	for (int i = 0; i < BALL_MAX; i++){
+		balls[i].update();
+		if (balls[i].m_position.y < 0) {
+			balls[i].m_position = balls[i].m_lastPosition;
+			balls[i].m_speed.y = fabs(balls[i].m_speed.y);
+		}
+		if (balls[i].m_position.y >= windowSize.y) {
+			balls[i].m_position = balls[i].m_lastPosition;
+			balls[i].m_speed.y = -fabs(balls[i].m_speed.y);
+		}
+		if (balls[i].m_position.x >= windowSize.x) {
+			balls[i].m_position = balls[i].m_lastPosition;
+			balls[i].m_speed.x = -fabs(balls[i].m_speed.x);
+		}
+		if (balls[i].m_position.x < 0) {
+			balls[i].m_position = balls[i].m_lastPosition;
+			balls[i].m_speed.x = fabs(balls[i].m_speed.x);
+		}
+	}
 	float f = 2;
 	if (keys['w']) rect1.m_position.y -= f;
 	if (keys['s']) rect1.m_position.y += f;
@@ -89,6 +113,21 @@ void keyboardUp(unsigned char key, int x, int y) {
 	keys[key] = false;
 }
 int main(int argc, char* argv[]) {
+	srand(time(NULL));
+
+	for (int i = 0; i < BALL_MAX; i++) {
+		balls[i].m_position = vec2(
+			rand() % windowSize.x,
+			rand() % windowSize.y
+		);
+	}
+	for (int i = 0; i < BALL_MAX; i++) {
+		balls[i].m_speed = 
+			normalize(
+				vec2(
+					(float)rand()/RAND_MAX-5, 
+					(float)rand() / RAND_MAX-5)) ;
+	}
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GL_DOUBLE);
