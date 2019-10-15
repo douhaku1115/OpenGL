@@ -6,12 +6,14 @@
 #include "Rect.h"
 #include "Ball.h"
 #include <time.h>
+#include "Paddle.h"
 
 using namespace glm;
-#define BALL_MAX 256
+#define BALL_MAX 2
 ivec2 windowSize = { 800, 600 };
 
 bool keys[256];
+Paddle paddle;
 Ball balls[BALL_MAX];
 Rect rect1 = Rect(vec2(100, 100), vec2(100, 200));
 Rect rect2 = Rect(vec2(windowSize.x/2, windowSize.y / 2), vec2(200, 100));
@@ -29,7 +31,9 @@ void display(void) {
 	glMatrixMode(GL_MODELVIEW);//GLenum mode
 	glLoadIdentity();
 	
-	
+	glColor3ub(0xff, 0xff, 0xff);
+	paddle.draw();
+
 	if (rect1.intersect(rect2))
 		glColor3ub(0xff, 0x00, 0x00);
 	else
@@ -45,8 +49,10 @@ void display(void) {
 	if (keys['d']) angle += 1;
 	if (keys['a']) angle -= 1;
 	
+	glColor3ub(0xff, 0xff, 0xff);
 	
-	for (int i=0;i<BALL_MAX;i++)
+
+	for (int i = 0; i < BALL_MAX; i++)//;
 		balls[i].draw();
 	fontBegin();
 	fontSetColor(0, 0xff, 0);
@@ -66,6 +72,12 @@ void display(void) {
 void idle(void){
 	for (int i = 0; i < BALL_MAX; i++){
 		balls[i].update();
+
+		if (paddle.intersectBall(balls[i])) {
+			balls[i].m_position = balls[i].m_lastPosition;
+			balls[i].m_speed.x *= -1;
+		}
+
 		if (balls[i].m_position.y < 0) {
 			balls[i].m_position = balls[i].m_lastPosition;
 			balls[i].m_speed.y = fabs(balls[i].m_speed.y);
@@ -112,6 +124,9 @@ void keyboardUp(unsigned char key, int x, int y) {
 	//printf("keyboardUp:\'%c\'(%#x)\n", key, key);
 	keys[key] = false;
 }
+void passiveMotion(int x, int y) {
+	paddle.m_position = vec2(x, y);
+}
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
 
@@ -122,12 +137,15 @@ int main(int argc, char* argv[]) {
 		);
 	}
 	for (int i = 0; i < BALL_MAX; i++) {
-		balls[i].m_speed = 
+		balls[i].m_speed=
 			normalize(
 				vec2(
 					(float)rand()/RAND_MAX-5, 
-					(float)rand() / RAND_MAX-5)) ;
+					(float)rand() / RAND_MAX-5)
+			) * 3.f;
 	}
+	paddle.m_height = 300;
+
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GL_DOUBLE);
@@ -140,6 +158,8 @@ int main(int argc, char* argv[]) {
 	glutReshapeFunc(reshape);//void (GLUTCALLBACK *func)(int width, int height));
 	glutKeyboardFunc(keyboard);//GLUTCALLBACK *func)(unsigned char key, int x, int y));
 	glutKeyboardUpFunc(keyboardUp);//void (GLUTCALLBACK *func)(unsigned char key, int x, int y));
+	glutPassiveMotionFunc(passiveMotion); //void (GLUTCALLBACK * func)(int x, int y));
+    //glutMotionFunc(motion); void (GLUTCALLBACK * func)(int x, int y));
 	glutIgnoreKeyRepeat(GL_TRUE);//int ignore
 	glutMainLoop();
 }
